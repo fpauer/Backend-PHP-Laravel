@@ -1,13 +1,10 @@
 # Backend in Laravel 5.1
 
-## Proposal
-
 The idea is to check how is the entire process since install the web framework till the final version
 of a Backend application to provide web services for a Single Page Application.
 
-I will try to follow all Laravel best practices while building the application.
 
-## Instalation
+## Installation
 
 1 - Create a laravel project and the folder
 ```sh
@@ -52,13 +49,13 @@ I will try to follow all Laravel best practices while building the application.
     $ php artisan make:model [Table name]  
 ```
 
-5 - Create seeders to populate the table to test OR create it using unit test.
+5 - Create [seeders][https://laravel.com/docs/5.1/seeding] to populate the table to test OR create it using unit test.
 
 ## Default Authentication module
 
-	Laravel provides two authentication controllers out of the box, see the [documentation][laravel_auth_doc].
+Laravel provides two authentication controllers out of the box, see the [documentation][laravel_auth_doc].
 	
-	There is another [project][laravel_auth_project] describing how to use the authentication module from Laravel and even how to customized it.
+There is another [project][laravel_auth_project] describing how to use the authentication module from Laravel and even how to customized it.
 
 ## Pros
 - Easy to install
