@@ -2,8 +2,8 @@
 
 ## Proposal
 
-The idea is check how is the entire process since install the web framework til final version
-of a Backend application to provide web services for a Sngle Page Application.
+The idea is to check how is the entire process since install the web framework till the final version
+of a Backend application to provide web services for a Single Page Application.
 
 ## Instalation
 
@@ -12,13 +12,16 @@ of a Backend application to provide web services for a Sngle Page Application.
 
 Database migrations
 
-1 - php artisan make:migration create_[table name]_table --create=[table name]
+1 - Create a table in the database
+    php artisan make:migration create_[table name]_table --create=[table name]
 
-2 - implement the coluns inside the migration file
+2 - Implement the coluns inside the migration file class.
 
-3 - php artisan migrate (save the infos inside the data base)
+3 - Commit the changes inside the database
+	php artisan migrate
 
-4 - php artisan make:model [Table name]  
+4 - Create a model based on the table created 
+    php artisan make:model [Table name]  
 
 ## Pros
 - Easy to install
