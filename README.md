@@ -7,6 +7,23 @@ of a Backend application to provide web services for a Single Page Application.
 
 ## Instalation
 
+1 - Create a laravel project and the folder
+```sh
+	composer create-project --prefer-dist laravel/laravel [project name]
+```
+
+2 - It grant all access to project folder (It could be better)
+```sh
+    chmod 777 backend_laravel
+```
+
+3 - Run the project
+```sh
+    php artisan serve
+```
+    
+4 - Create the database to store the user table and others
+
 
 ## Best pratices 
 
@@ -29,6 +46,6 @@ Database migrations
 
 
 ## Cons
-
+- 
 
 ## Conclusion
