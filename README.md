@@ -1,9 +1,14 @@
 # Backend in Laravel 5.1
 
+## Proposal
+
+The idea is check how is the entire process since install the web framework til final version
+of a Backend application to provide web services for a Sngle Page Application.
+
+## Instalation
 
 
-
-# Best pratices 
+## Best pratices 
 
 Database migrations
 
@@ -15,8 +20,12 @@ Database migrations
 
 4 - php artisan make:model [Table name]  
 
-# Pros
+## Pros
 - Easy to install
 - Excellent documentation 
 
-# Cons
+
+## Cons
+
+
+## Conclusion
