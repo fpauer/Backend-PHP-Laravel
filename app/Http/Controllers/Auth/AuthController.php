@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace MyNews\Http\Controllers\Auth;
 
-use App\User;
+use MyNews\User;
 use Validator;
-use App\Http\Controllers\Controller;
+use MyNews\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
