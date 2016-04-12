@@ -109,5 +109,8 @@
 </div><!-- /.modal -->
 @endsection
 @section('javascript')
-<script src="{{ URL::asset('js/home.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-1.12.3.min.js" type="text/javascript"></script>
+  <script src="http://underscorejs.org/underscore-min.js" type="text/javascript"></script>
+  <script src="http://backbonejs.org/backbone-min.js" type="text/javascript"></script>
+  <script src="{{ URL::asset('js/home.app.js') }}"></script>
 @endsection

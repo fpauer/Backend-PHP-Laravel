@@ -15,6 +15,6 @@ class Article extends Model
     
     protected $fillable = ['user_id', 'title', 'body', 'photo_path', 'link', 'author_name', 'author_email', 'updated_at', 'active'];
     
-    protected $visible = ['user_id', 'title', 'body', 'photo_path', 'link', 'author_name', 'author_email', 'created_at', 'updated_at', 'active'];
+    protected $visible = ['id_crypt', 'user_id', 'title', 'body', 'photo_path', 'link', 'author_name', 'author_email', 'created_at', 'updated_at', 'active'];
     
 }

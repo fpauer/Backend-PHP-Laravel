@@ -22,26 +22,22 @@ Route::group(['middleware' => 'web'], function () {
 	//Route::get('/dashboard', 'HomeController@index');
 
 	//Router Article
-	Route::group(['prefix'=>'api'], function() {
-		 
-		//Router to create a new article
-		//Route::get('/create', 'ArticleController@create');
-		 
-		//Router to save a new article
-		//Route::post('/create', 'ArticleController@store');
-		 
-		//Router to create a pdf file with the article content
-		//Route::get('/{slug}/pdf','ArticleController@pdf');
-		 
+	Route::group(['prefix'=>'articles'], function() {
+		
 		//Router to delete an article
-		//Route::get('/{id}/destroy','ArticleController@destroy');
+		Route::delete('/{id}','DashboardController@destroy');
 		 
 		//Router to update an article
-		//Route::get('/{id}/update','ArticleController@update');
+		Route::put('/{id}','DashboardController@update');
 		 
 		//Router to show an article
-		//Route::get('/{slug}','ArticleController@index');
-		 
+		Route::get('/{slug}','DashboardController@index');
+		
+		//Router to create a new article
+		Route::post('/', 'DashboardController@store');
+		
+		//Router to show an article
+		Route::get('/','DashboardController@readAll');
 	});
 
 });
