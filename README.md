@@ -61,7 +61,7 @@ There is another [project][laravel_auth_project] describing how to use the authe
 - Easy to install
 - Excellent documentation 
 - Big community
-
+- RESTFul design pattern
 
 ## Cons
 - The default installation brings a complete set of tools to any web application however if you wish just to build a REST api, it is a heavy alternative.

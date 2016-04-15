@@ -10,29 +10,19 @@
 
                 <div class="panel-body">
                 	
-                if ( isset( action) )
-                	if ( strcmp( action, "success") == 0  )
-						<a href="/article/create" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> New Article</a>
-	                	<br/><br/>
-               			<div class="alert alert-success" role="alert">message</div>
-                	elseif ( strcmp( action, "confirmation") == 0 )
-               			<div class="alert alert-warning" role="alert">message</div>
-                	elseif ( strcmp( action, "error") == 0 )
-               			<div class="alert alert-error" role="alert">message</div>
-                	endif
-                else
-					<a href="/article/create" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> New Article</a>
-                	<br/><br/>
-                endif
-                	
-                	
-                php 
-                	$maxCell = 3; 
-                	$cells = 0;
+                <a href="/article/create" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> New Article</a>
+                <br/><br/>
+                <div id="message-box"></div>
                 
                 if( sizeof(articles) == 0 && !isset(action) )
                 <div class="alert alert-info" role="alert">Hi! You don't have any article yet! Lets create the first.</div>
                 endif
+                	
+                <div id="app">
+                </div>
+                php 
+                	$maxCell = 3; 
+                	$cells = 0;
                 
 				foreach(articles as article)
 				
@@ -107,6 +97,44 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<script type="text/template" id="tmpMessageBox">
+<div class="alert alert-<%= action %>" role="alert"><%- message %></div>
+</script>
+
+<script type="text/template" id="tmpArticle">
+					      <% if ( photo_path != "" ) { %>
+					      <img src="<%=photo_path%>" style="height: 100%; width: 280; display: block;">
+					      <% } else { %>
+					      <img data-src="holder.js/100%x200" alt="100%x200" 
+					      	src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTUzOTBmNmNmYWUgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNTM5MGY2Y2ZhZSI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44NTkzNzUiIHk9IjEwNS4xIj4yNDJ4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" 
+					      	data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
+					      <% } %>
+					      <div class="caption">
+					        <h3><a href="article/<%= link %>" target="_blank">title: <%- title %></a></h3>
+					        <span class="glyphicon glyphicon-time" aria-hidden="true"></span><%= created_at %> 
+					       <p>
+					       		<div class="btn-group" role="group" aria-label="Actions">
+					       		  
+					       		  <% 
+					       		  	var visibleClass = "btn-success";
+					       		  	var hiddenClass = "btn-default";
+					       		  	if ( active )
+					       		  	{
+						       		  	visibleClass = "btn-default";
+						       		  	hiddenClass = "btn-warning";
+					       		  	}
+					       		  %>
+								  <button type="button" class="btn btn-sm  <%= visibleClass %>" onclick="toggleArticle(this, '<%= id_crypt %>',1);" ><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Visible</button>
+								  <button type="button" class="btn btn-sm  <%= hiddenClass %> " onclick="toggleArticle(this, '<%= id_crypt %>',0);" ><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span> Hidden</button>
+								  
+								</div>
+								<a href="javascript: confirmDelete('<%= title %>' ,'<%= id_crypt %>');" class="btn btn-sm btn-danger pull-right" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a> 
+						        
+					       </p>
+					      </div>
+</script>
+
 @endsection
 @section('javascript')
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" type="text/javascript"></script>

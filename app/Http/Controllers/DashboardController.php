@@ -2,6 +2,8 @@
 
 namespace MyNews\Http\Controllers;
 
+use Illuminate\Support\Facades\View;
+
 use Illuminate\Support\Facades\Crypt;
 
 use MyNews\Http\Requests\ArticleRequest;
@@ -21,6 +23,16 @@ class DashboardController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+    
+    /**
+     * Show the article.
+     *
+     * @return View
+     */
+    public function page()
+    {
+    	return view('home',[]);
     }
     
     /**
@@ -55,7 +67,7 @@ class DashboardController extends Controller
     	
     	$this->transform($articles);
     	
-    	return response()->json($articles->toJson());
+    	return response()->json($articles, 200);
     }
     
     
@@ -68,7 +80,7 @@ class DashboardController extends Controller
     {
     	$article = Article::where('link','=',$slug)->first();
     	$this->transform($article);
-    	return response()->json($article->toJson());
+    	return response()->json($article);
     }
     
     /**
@@ -100,7 +112,7 @@ class DashboardController extends Controller
     
     	$articles = Article::where('user_id','=',Auth::user()->id)->orderBy('updated_at', 'DESC')->get();
     	$this->transform($articles);
-    	return response()->json($articles->toJson());
+    	return response()->json($articles);
     }
     
     /**

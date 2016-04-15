@@ -14,7 +14,7 @@
 Route::group(['middleware' => 'web'], function () {
 	
 	//login
-	Route::get('/', 'DashboardController@index');
+	Route::get('/', 'DashboardController@page');
 	
 	//services without authentication 
 	Route::auth();
