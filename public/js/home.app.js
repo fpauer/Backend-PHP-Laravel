@@ -37,7 +37,7 @@ var ArticleCollection = Backbone.Collection.extend({
 	  model: ArticleModel
 });
 
-var articles = new ArticleCollection();
+app.articleList = new ArticleCollection();
 
 //--------------
 // Views
@@ -64,17 +64,16 @@ app.messageBoxView = new app.MessageBoxView();
 //renders an Article (div)
 app.ArticleView = Backbone.View.extend({
     tagName: 'div',
-    className: 'thumbnail',
+    className: 'col-sm-6 col-md-4',
 	template: _.template($('#tmpArticle').html()),
 	render: function(){
-		//console.log( this.template(this.model.toJSON()) );
         this.$el.html(this.template(this.model.toJSON()));
         //this.input = this.$('.edit');
-        return this; // enable chained calls
+        return this;
 	},
     initialize: function(){
-        //this.model.on('change', this.render, this);
-        //this.model.on('destroy', this.remove, this); // remove: Convenience Backbone
+        this.model.on('change', this.render, this);
+        this.model.on('destroy', this.remove, this);
     },
     /*
     events: {
@@ -110,57 +109,64 @@ app.ArticleView = Backbone.View.extend({
     */
 });
 
-articles.fetch({
-
-    dataType: "json",
-    success: function(data) {
-    	var articleView = new app.ArticleView({model: data.at(0)});
-    	$("#app").append( articleView.render().$el );
-    },
-    error: function() {
-        console.log('error');
-    }
-
-});
-
-//renders the full list of todo items calling TodoView for each one.
-/*
+//renders the full list of Artciles calling ArticleView for each one.
 app.AppView = Backbone.View.extend({
   el: '#app',
+  max_per_line: 3,
+  curr_per_line: 0,
   initialize: function () {
-      this.input = this.$('#new-todo');
-      app.todoList.on('add', this.addAll, this);//(model, collection, options) — when a model is added to a collection.
-      app.todoList.on('reset', this.addAll, this);//(collection, options) — when the collection's entire contents have been reset.
-      app.todoList.fetch(); // Loads list from local storage
+      //this.input = this.$('#new-todo');
+      app.articleList.on('add', this.addAll, this);//(model, collection, options) — when a model is added to a collection.
+      app.articleList.on('reset', this.addAll, this);//(collection, options) — when the collection's entire contents have been reset.
+      app.articleList.fetch({
+	  	    dataType: "json",
+	  	    error: function() {
+	  	        console.log('error');
+	  	    }
+	
+	  });
+      this.checkListArticles();
   },
-  events: {
-      'keypress #new-todo': 'createTodoOnEnter'
+  //events: {
+  //    'keypress #new-todo': 'createTodoOnEnter'
+  //},
+  checkListArticles: function()
+  {
+	  console.log(app.articleList);
+      if( app.articleList.length == 0 ) app.messageBoxView.showMessage({action:'info', message:"Hi! You don't have any article yet! Lets create the first."});
   },
-  createTodoOnEnter: function(e){
+  createArticleOnEnter: function(e){
     if ( e.which !== 13 || !this.input.val().trim() ) { // ENTER_KEY = 13
       return;
     }
-    app.todoList.create(this.newAttributes());
+    app.articleList.create(this.newAttributes());
     this.input.val(''); // clean input box
   },
-  addOne: function(todo){
-    //var view = new app.TodoView({model: todo});
-    //$('#todo-list').append(view.render().el);
+  addOne: function(article){
+	var articleView = new app.ArticleView({model: article});
+	this.curr_per_line += 1;
+	if( this.curr_per_line == this.max_per_line || '' == this.$('#articles').html() )
+	{
+	  	$("#articles").append('<div class="row"></div>');
+		
+	}
+	
+	$("#articles").last().append( articleView.render().$el );
   },
   addAll: function(){
-    this.$('#todo-list').html(''); // clean the todo list
+    this.$('#articles').html(''); // clean the todo list
 	// filter todo item list
-	switch(window.filter){
-		case 'pending':
-			_.each(app.todoList.remaining(), this.addOne);
-			break;
-		case 'completed':
-			_.each(app.todoList.completed(), this.addOne);
-			 break;
-		default:
-			app.todoList.each(this.addOne, this);
-			break;
-	}
+	//switch(window.filter){
+		//case 'pending':
+		//	_.each(app.todoList.remaining(), this.addOne);
+		//	break;
+		//case 'completed':
+		//	_.each(app.todoList.completed(), this.addOne);
+		//	 break;
+		//default:
+			app.articleList.each(this.addOne, this);
+		//	break;
+	//}
   },
   newAttributes: function(){
       return {
@@ -169,7 +175,7 @@ app.AppView = Backbone.View.extend({
       }
   }
 });  
-*/
+
 
 //--------------
 // Routers
@@ -178,5 +184,4 @@ app.AppView = Backbone.View.extend({
 //--------------
 // Initializers
 //--------------
-
-//app.appView = new app.AppView(); 
+app.appView = new app.AppView(); 

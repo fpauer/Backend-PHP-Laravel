@@ -10,72 +10,13 @@
 
                 <div class="panel-body">
                 	
-                <a href="/article/create" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> New Article</a>
-                <br/><br/>
-                <div id="message-box"></div>
-                
-                if( sizeof(articles) == 0 && !isset(action) )
-                <div class="alert alert-info" role="alert">Hi! You don't have any article yet! Lets create the first.</div>
-                endif
-                	
-                <div id="app">
-                </div>
-                php 
-                	$maxCell = 3; 
-                	$cells = 0;
-                
-				foreach(articles as article)
-				
-					if ( $cells == 0 || $maxCell == $cells)
-						<div class="row">
-				  	endif
-				  	
-				  	<div class="col-sm-6 col-md-4">
-					    <div class="thumbnail">
-					      
-					      if ( !empty( article->photo_path) )
-					      <img src=" $article->photo_path " style="height: 100%; width: 280; display: block;">
-					      else
-					      <img data-src="holder.js/100%x200" alt="100%x200" 
-					      	src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTUzOTBmNmNmYWUgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNTM5MGY2Y2ZhZSI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44NTkzNzUiIHk9IjEwNS4xIj4yNDJ4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" 
-					      	data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
-					      endif
-					      <div class="caption">
-					        <h3><a href="article/  $article->link " target="_blank">article->title</a></h3>
-					        <span class="glyphicon glyphicon-time" aria-hidden="true"></span> article->created_at->format('d F Y g:i A') 
-					       <p>
-					       		<div class="btn-group" role="group" aria-label="Actions">
-					       		  
-					       		  php 
-					       		  	visibleClass = "btn-success";
-					       		  	hiddenClass = "btn-default";
-					       		  	if ( ! article->active )
-					       		  	{
-						       		  	visibleClass = "btn-default";
-						       		  	hiddenClass = "btn-warning";
-					       		  	}
-					       		  
-								  <button type="button" class="btn btn-sm  $visibleClass " onclick="toggleArticle(this, ' Crypt::encrypt($article->id) ',1);" ><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Visible</button>
-								  <button type="button" class="btn btn-sm  $hiddenClass " onclick="toggleArticle(this, ' Crypt::encrypt($article->id) ',0);" ><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span> Hidden</button>
-								  
-								</div>
-								<a href="javascript: confirmDelete(' $article->title ' ,' Crypt::encrypt($article->id) ');" class="btn btn-sm btn-danger pull-right" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a> 
-						        
-					       </p>
-					      </div>
-					    </div>
-					</div>
-				    
-					php cells++;
-					if ( maxCell == cells)
-						</div> 
-						php cells = 0;
-				  	endif
-				endforeach
-				
-				if ( cells != 0 || maxCell != cells)
-					</div> 
-			  	endif
+	                <a href="/article/create" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> New Article</a>
+	                <br/><br/>
+	                <div id="message-box"></div>
+	                
+	                <div id="app">
+	                	<div id="articles"></div>
+	                </div>
                 </div>
             </div>
     </div>
@@ -103,6 +44,7 @@
 </script>
 
 <script type="text/template" id="tmpArticle">
+						<div class="thumbnail">
 					      <% if ( photo_path != "" ) { %>
 					      <img src="<%=photo_path%>" style="height: 100%; width: 280; display: block;">
 					      <% } else { %>
@@ -111,7 +53,7 @@
 					      	data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
 					      <% } %>
 					      <div class="caption">
-					        <h3><a href="article/<%= link %>" target="_blank">title: <%- title %></a></h3>
+					        <h3><a href="article/<%= link %>" target="_blank"><%- title %></a></h3>
 					        <span class="glyphicon glyphicon-time" aria-hidden="true"></span><%= created_at %> 
 					       <p>
 					       		<div class="btn-group" role="group" aria-label="Actions">
@@ -133,6 +75,7 @@
 						        
 					       </p>
 					      </div>
+					    </div>
 </script>
 
 @endsection
