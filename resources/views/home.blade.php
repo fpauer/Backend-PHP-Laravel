@@ -15,12 +15,14 @@
 	                <div id="message-box"></div>
 	                
 	                <div id="app">
+	                	<div id="loading"><img src='/img/spinner.gif'></div>
 	                	<div id="articles"></div>
 	                </div>
                 </div>
             </div>
     </div>
 </div>
+
 <div class="modal fade" tabindex="-1" role="dialog" id="confirmModal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -28,9 +30,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Confirmation</h4>
       </div>
-      <div class="modal-body">
-        <h3 id="modalMessage">Message</h3>
-      </div>
+      <div class="modal-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
         <button type="button" class="btn btn-success" id="btModalYes">Yes</button>
@@ -38,6 +38,10 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<script type="text/template" id="tmpConfirmModal">
+<h3 id="modalMessage"><%- message %></h3>
+</script>
 
 <script type="text/template" id="tmpMessageBox">
 <div class="alert alert-<%= action %>" role="alert"><%- message %></div>
@@ -71,7 +75,7 @@
 								  <button type="button" class="btn btn-sm  <%= hiddenClass %> " onclick="toggleArticle(this, '<%= id_crypt %>',0);" ><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span> Hidden</button>
 								  
 								</div>
-								<a href="javascript: confirmDelete('<%= title %>' ,'<%= id_crypt %>');" class="btn btn-sm btn-danger pull-right" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a> 
+								<a class="destroy btn btn-sm btn-danger pull-right" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a> 
 						        
 					       </p>
 					      </div>
@@ -83,5 +87,6 @@
   <script src="https://code.jquery.com/jquery-1.12.3.min.js" type="text/javascript"></script>
   <script src="http://underscorejs.org/underscore-min.js" type="text/javascript"></script>
   <script src="http://backbonejs.org/backbone-min.js" type="text/javascript"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="{{ URL::asset('js/home.app.js') }}"></script>
 @endsection

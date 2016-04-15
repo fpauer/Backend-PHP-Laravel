@@ -49,17 +49,50 @@ app.MessageBoxView = Backbone.View.extend({
   template: _.template($('#tmpMessageBox').html()),
   data: {action:'', message:''},
   render: function(){
-	if( this.data.action != '' ) this.$el.html(this.template(this.data));
+	this.$el.html(this.template(this.data));
     return this;
   },
   showMessage(data)
   {
 	  this.data = data;
 	  this.render();
+  },
+  clear()
+  {
+	  this.$el.html('');
   }
 });
 app.messageBoxView = new app.MessageBoxView(); 
 //app.messageBoxView.showMessage({action:'danger', message:'Teste'});
+
+//renders a Modal Confirm (div)
+app.ConfirmModalView = Backbone.View.extend({
+	el: '#confirmModal',
+	template: _.template($('#tmpConfirmModal').html()),
+	data: {message:'', view:null},
+	render: function(){
+		this.$el.find('.modal-body').html(this.template(this.data));
+		return this;
+	},
+    events: {
+        'click #btModalYes': 'callBack'
+    },
+	showMessage: function(data)
+	{
+		this.data = data;
+		this.render();
+		this.$el.modal('show');
+	},
+	callBack: function()
+	{
+		if( this.data.view !== 'undefined' && this.data.view !=null )
+		{
+			this.data.view.callBack();
+		}
+		this.$el.modal('hide');
+	}
+});
+app.confirmModalView = new app.ConfirmModalView(); 
 
 //renders an Article (div)
 app.ArticleView = Backbone.View.extend({
@@ -73,16 +106,16 @@ app.ArticleView = Backbone.View.extend({
 	},
     initialize: function(){
         this.model.on('change', this.render, this);
-        this.model.on('destroy', this.remove, this);
+        this.model.on('destroy', this.confirmDestroy, this);
+    },
+    events: {
+        //'dblclick label' : 'edit',
+        //'keypress .edit' : 'updateOnEnter',
+        //'blur .edit' : 'close',
+        //'click .toggle': 'toggleCompleted',
+        'click .destroy': 'confirmDestroy'
     },
     /*
-    events: {
-        'dblclick label' : 'edit',
-        'keypress .edit' : 'updateOnEnter',
-        'blur .edit' : 'close',
-        'click .toggle': 'toggleCompleted',
-        'click .destroy': 'destroy'
-    },
     edit: function(){
         this.$el.addClass('editing');
         this.input.focus();
@@ -102,16 +135,25 @@ app.ArticleView = Backbone.View.extend({
           this.close();
         }
     },
-    destroy: function(){
-  	  if( confirm('Do you really want to remove \n the to-do: ' + this.model.get('title') + ' ?' ) )
-  		  this.model.destroy();
-    }
     */
+    confirmDestroy: function(){
+    	var message = 'The article "'+this.model.get('title')+'" will be deleted, please confirm ?';
+    	this.callBack = this.destroy;
+    	app.confirmModalView.showMessage({message: message, view: this});
+    },
+    //not working yet
+    destroy: function(){
+    	
+    	app.articleList.remove(this.model);
+    	app.articleList.trigger('reset');
+    	//app.articleList.sync();
+    }
 });
 
 //renders the full list of Artciles calling ArticleView for each one.
 app.AppView = Backbone.View.extend({
   el: '#app',
+  loading: '#loading',
   max_per_line: 3,
   curr_per_line: 0,
   initialize: function () {
@@ -120,20 +162,40 @@ app.AppView = Backbone.View.extend({
       app.articleList.on('reset', this.addAll, this);//(collection, options) — when the collection's entire contents have been reset.
       app.articleList.fetch({
 	  	    dataType: "json",
+	  	    success: function()
+	  	    {
+	  	    	app.appView.checkListArticles();
+	  	    	app.appView.stopLoading();
+	  	    },
 	  	    error: function() {
 	  	        console.log('error');
 	  	    }
-	
 	  });
-      this.checkListArticles();
+      
   },
   //events: {
   //    'keypress #new-todo': 'createTodoOnEnter'
   //},
+  // Display a loading indication whenever the Collection is fetching.
+  showLoading()
+  {
+	  $(loading).hide();
+  },
+  // Hide a loading indication whenever the Collection is fetching.
+  stopLoading()
+  {
+	  $(loading).hide();
+  },
   checkListArticles: function()
   {
-	  console.log(app.articleList);
-      if( app.articleList.length == 0 ) app.messageBoxView.showMessage({action:'info', message:"Hi! You don't have any article yet! Lets create the first."});
+      if( app.articleList.length == 0 )
+      {
+    	  app.messageBoxView.showMessage(
+    			  { action:'info', 
+    			   message:"Hi! You don't have any article yet! Lets create the first."
+    			  });
+      }
+      else app.messageBoxView.clear();
   },
   createArticleOnEnter: function(e){
     if ( e.which !== 13 || !this.input.val().trim() ) { // ENTER_KEY = 13
@@ -148,7 +210,6 @@ app.AppView = Backbone.View.extend({
 	if( this.curr_per_line == this.max_per_line || '' == this.$('#articles').html() )
 	{
 	  	$("#articles").append('<div class="row"></div>');
-		
 	}
 	
 	$("#articles").last().append( articleView.render().$el );
@@ -167,6 +228,7 @@ app.AppView = Backbone.View.extend({
 			app.articleList.each(this.addOne, this);
 		//	break;
 	//}
+    this.checkListArticles();
   },
   newAttributes: function(){
       return {

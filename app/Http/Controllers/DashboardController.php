@@ -141,7 +141,7 @@ class DashboardController extends Controller
     	Article::where('id', '=', $article_id)->delete();
     	 
     	$articles = Article::where('user_id','=',Auth::user()->id)->orderBy('updated_at', 'DESC')->get();
-    	return response()->json(['status' => 'OK'], 200);
+    	return response()->json(['status' => $id], 200);
     }
     
 }
