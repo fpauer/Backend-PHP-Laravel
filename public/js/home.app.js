@@ -1,4 +1,8 @@
 'use strict';
+var ARTICLE_MODE_NEW = 'New'; 
+var ARTICLE_MODE_EDIT = 'Edit'; 
+var ARTICLE_MODE_THUMBNAIL = 'Thumbnail'; 
+var ARTICLE_MODE_FULL = 'Full'; 
 
 var app = {}; // create namespace for the app
 
@@ -98,15 +102,23 @@ app.confirmModalView = new app.ConfirmModalView();
 app.ArticleView = Backbone.View.extend({
     tagName: 'div',
     className: 'col-sm-6 col-md-4',
-	template: _.template($('#tmpArticle').html()),
+	mode: ARTICLE_MODE_THUMBNAIL,
+	template: _.template($('#tmpArticleThumbnail').html()),
 	render: function(){
+		console.log(this.model.toJSON());
         this.$el.html(this.template(this.model.toJSON()));
         //this.input = this.$('.edit');
         return this;
 	},
-    initialize: function(){
+    initialize: function(obj){
+    	this.mode = obj.mode;
+    	this.template = _.template($('#tmpArticle'+this.mode).html());
         this.model.on('change', this.render, this);
         this.model.on('destroy', this.confirmDestroy, this);
+    },
+    changeMode: function(mode){
+    	this.mode = mode;
+    	this.template = _.template($('#tmpArticle'+this.mode).html());
     },
     events: {
         //'dblclick label' : 'edit',
@@ -158,8 +170,8 @@ app.AppView = Backbone.View.extend({
   curr_per_line: 0,
   initialize: function () {
       //this.input = this.$('#new-todo');
-      app.articleList.on('add', this.addAll, this);//(model, collection, options) — when a model is added to a collection.
-      app.articleList.on('reset', this.addAll, this);//(collection, options) — when the collection's entire contents have been reset.
+      app.articleList.on('add', this.addAllinList, this);//(model, collection, options) — when a model is added to a collection.
+      app.articleList.on('reset', this.addAllinList, this);//(collection, options) — when the collection's entire contents have been reset.
       app.articleList.fetch({
 	  	    dataType: "json",
 	  	    success: function()
@@ -173,15 +185,21 @@ app.AppView = Backbone.View.extend({
 	  });
       
   },
-  //events: {
-  //    'keypress #new-todo': 'createTodoOnEnter'
-  //},
-  // Display a loading indication whenever the Collection is fetching.
+  events: {
+      'keypress #new-article': 'createArticleOnEnter'
+  },
+  
+  /**
+   * Display a loading indication whenever the Collection is fetching.
+   */
   showLoading()
   {
 	  $(loading).hide();
   },
-  // Hide a loading indication whenever the Collection is fetching.
+  
+  /**
+   * Hide a loading indication whenever the Collection is fetching.
+   */
   stopLoading()
   {
 	  $(loading).hide();
@@ -204,31 +222,41 @@ app.AppView = Backbone.View.extend({
     app.articleList.create(this.newAttributes());
     this.input.val(''); // clean input box
   },
-  addOne: function(article){
-	var articleView = new app.ArticleView({model: article});
+  
+  /**
+   * Add an article inside the list
+   */
+  addOneInList: function(article){
+	var articleView = new app.ArticleView({model: article, mode:ARTICLE_MODE_THUMBNAIL});
 	this.curr_per_line += 1;
 	if( this.curr_per_line == this.max_per_line || '' == this.$('#articles').html() )
 	{
 	  	$("#articles").append('<div class="row"></div>');
+	  	this.curr_per_line = 0;
 	}
 	
 	$("#articles").last().append( articleView.render().$el );
   },
-  addAll: function(){
-    this.$('#articles').html(''); // clean the todo list
-	// filter todo item list
-	//switch(window.filter){
-		//case 'pending':
-		//	_.each(app.todoList.remaining(), this.addOne);
-		//	break;
-		//case 'completed':
-		//	_.each(app.todoList.completed(), this.addOne);
-		//	 break;
-		//default:
-			app.articleList.each(this.addOne, this);
-		//	break;
-	//}
+  
+  /**
+   * for each in Article List and render each article
+   */
+  addAllinList: function(){
+    this.$('#articles').html(''); // clean the todo listF
+	app.articleList.each(this.addOneInList, this);
     this.checkListArticles();
+  },
+  
+  /**
+   * Open the form to add a new article
+   */
+  newArticle: function(){
+	    this.$('#articles').html(''); // clean the todo list
+	    this.$('#list').hide(); // clean the todo list
+
+		var articleView = new app.ArticleView({model: app.articleList.create(), mode:ARTICLE_MODE_NEW});
+		$("#edit").html( articleView.render().$el.html() );
+	    this.$('#edit').show(); // clean the todo list
   },
   newAttributes: function(){
       return {
@@ -242,8 +270,37 @@ app.AppView = Backbone.View.extend({
 //--------------
 // Routers
 //--------------
+app.Router = Backbone.Router.extend({
+    routes: {
+      '*filter' : 'setFilter'
+    },
+    setFilter: function(params) {
+      if( params != null ) window.filter = params.trim() || '';
+      else window.filter = '';
+
+      console.log('app.router.params = ' + params); // just for didactical purposes.
+
+	  //filter app
+	  switch(window.filter){
+	  		case 'new':
+	  			app.appView.newArticle();
+	  			break;
+	  		case 'edit':
+	  			//_.each(app.todoList.completed(), this.addOneInList);
+	  			 break;
+	  		case 'detail':
+	  			//_.each(app.todoList.completed(), this.addOneInList);
+	  			 break;
+	  		default:
+	  	        app.articleList.trigger('reset');
+	  			break;
+	  }
+    }
+ });
 
 //--------------
 // Initializers
 //--------------
 app.appView = new app.AppView(); 
+app.router = new app.Router();
+Backbone.history.start();

@@ -8,17 +8,19 @@
                 	My articles
                 </div>
 
-                <div class="panel-body">
-                	
-	                <a href="/article/create" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> New Article</a>
-	                <br/><br/>
-	                <div id="message-box"></div>
-	                
-	                <div id="app">
+	            <div id="app">
+	                <div class="panel-body" id="list">
+	                	
+		                <a href="#/new" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> New Article</a>
+		                <br/><br/>
+		                <div id="message-box"></div>
+		                
 	                	<div id="loading"><img src='/img/spinner.gif'></div>
 	                	<div id="articles"></div>
 	                </div>
-                </div>
+	            </div>
+                
+                <div class="panel-body" id="edit"></div>
             </div>
     </div>
 </div>
@@ -47,7 +49,7 @@
 <div class="alert alert-<%= action %>" role="alert"><%- message %></div>
 </script>
 
-<script type="text/template" id="tmpArticle">
+<script type="text/template" id="tmpArticleThumbnail">
 						<div class="thumbnail">
 					      <% if ( photo_path != "" ) { %>
 					      <img src="<%=photo_path%>" style="height: 100%; width: 280; display: block;">
@@ -80,6 +82,39 @@
 					       </p>
 					      </div>
 					    </div>
+</script>
+
+<script type="text/template" id="tmpArticleNew">
+				<form method="POST" enctype="multipart/form-data">
+				  <div class="form-group required">
+				    <label for="inputTitle">Title</label>
+				    <input type="title" class="form-control" id="Title" name="Title" placeholder="What is the title ?" value="<%= title%>">
+				  </div>
+				  <div class="form-group">
+				    <label for="inputTitle">Photo</label>
+				    <input name="file" type="file" 
+					   class="cloudinary-fileupload" data-cloudinary-field="image_id" 
+					   data-form-data=" ... html-escaped JSON data ... " valeu="Select a file or drag and drop here"></input>
+				  </div>
+				  <div class="form-group required">
+				    <label for="inputTitle">Content</label>
+				    <input type="hidden" id="Content" name="Content"></input>
+					<div id="summernote"></div>
+  				  </div>
+				  <div class="form-group">
+				    <label for="inputTitle">Reporter Name</label>
+				    <input type="title" class="form-control" id="ReporterName" name="ReporterName" placeholder="What is the reporter name ?"  value="<%= author_name %>">
+				  </div>
+				  <div class="form-group">
+				    <label for="inputTitle">Reporter E-mail</label>
+				    <input type="title" class="form-control" id="ReporterEmail" name="ReporterEmail" placeholder="What is the email ?"  value="<%= author_email %>">
+				  </div>
+				  
+ 	 			  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</button>
+  				  <a class="btn btn-default" href="#"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Cancel</a>
+
+                	
+				</form>
 </script>
 
 @endsection
